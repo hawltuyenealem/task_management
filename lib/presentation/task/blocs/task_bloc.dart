@@ -32,7 +32,6 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     emit(TaskLoadingState());
     try {
       String userId = await sl<LocalStorageService>().getStringFromDisk('userId') ?? "userId";
-      print("here ${userId}");
 
       await emit.forEach<Either<String, List<TaskModel>>>(
         taskRepository.getTasks(userId: userId),

@@ -60,7 +60,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
         backgroundColor: ColorConstant.primaryColor,
         leading: IconButton(onPressed: (){
           Navigator.pop(context);
-        }, icon: Icon(Icons.arrow_back,color: Colors.white,)),
+        }, icon: const Icon(Icons.arrow_back,color: Colors.white,)),
       ),
       body: BlocListener<TaskBloc, TaskState>(
         listener: (context, state) {
@@ -123,7 +123,6 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                 ),
                 const Divider(),
 
-                // Priority Dropdown
                 DropdownButtonFormField<String>(
                   value: _priority,
                   items: ['Low', 'Medium', 'High']

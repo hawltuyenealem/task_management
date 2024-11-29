@@ -51,7 +51,7 @@ class TaskService {
             return TaskModel(
                 id: doc.id,
                 priority: doc['priority'],
-                dueDate: DateTime.now(),
+                dueDate: DateTime.parse(doc['dueDate']),
                 description: doc['description'] ??"test description",
                 title: doc['title'],
                 isCompleted: doc['isCompleted']??false
