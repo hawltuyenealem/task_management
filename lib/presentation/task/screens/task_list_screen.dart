@@ -125,7 +125,6 @@ class _TaskListScreenState extends State<TaskListScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            // Left-side Icon
             IconButton(
               icon: const Icon(Icons.filter_list, color: Colors.purple),
               onPressed: () {
@@ -158,6 +157,15 @@ class _TaskListScreenState extends State<TaskListScreen> {
                           onTap: () {
                             sl<TaskBloc>()
                                 .add(FilterTasksEvent(priority: 'Low'));
+                            Navigator.pop(context);
+                          },
+                        ),
+                        ListTile(
+                          leading: const Icon(Icons.compare),
+                          title: const Text('Completed'),
+                          onTap: () {
+                            sl<TaskBloc>()
+                                .add(FilterTasksEvent(isCompleted: true));
                             Navigator.pop(context);
                           },
                         ),
