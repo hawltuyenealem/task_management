@@ -20,26 +20,52 @@ class TaskService {
     }
   }
 
-  Stream<Either<String, List<TaskModel>>> getTasks({required String userId}) {
+  Stream<Either<String, List<TaskModel>>> getTasks({
+    required String userId,
+    String? priority,
+    bool? isCompleted,
+  }) {
     try {
-      return _firestore
+      Query query = _firestore
           .collection('users')
           .doc(userId)
           .collection('tasks')
-          .orderBy('dueDate', descending: false)
-          .snapshots()
-          .map((snapshot) => Right<String, List<TaskModel>>(
-                snapshot.docs
-                    .map((doc) =>
-                        TaskModel.fromJson({...doc.data(), 'id': doc.id}))
-                    .toList(),
-              ))
-          .handleError((error) => const Left<String, List<TaskModel>>(
-              'Failed to fetch tasks'));
+          .orderBy('dueDate', descending: false);
+
+      if (priority != null) {
+        query = query.where('priority', isEqualTo: priority);
+      }
+
+      if (isCompleted != null) {
+        query = query.where('isCompleted', isEqualTo: isCompleted);
+      }
+
+      return query.snapshots().map(
+            (snapshot) => Right<String, List<TaskModel>>(
+          snapshot.docs.map((doc) {
+            final data = doc.data()!;
+            print("here we go data${data}");
+            print("title ${doc['title']}");
+
+
+            return TaskModel(
+                id: doc.id,
+                priority: doc['priority'],
+                dueDate: DateTime.now(),
+                description: doc['description'] ??"test description",
+                title: doc['title'],
+                isCompleted: doc['isCompleted']??false
+            );
+          }).toList(),
+        ),
+      ).handleError(
+            (error) => const Left<String, List<TaskModel>>('Failed to fetch tasks'),
+      );
     } catch (e) {
       return Stream.value(const Left('Failed to fetch tasks'));
     }
   }
+
 
   Future<Either<String, Unit>> updateTask({required String userId,required TaskModel updatedData,}) async {
     try {

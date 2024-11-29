@@ -21,6 +21,8 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
   TaskBloc({required this.taskRepository}) : super(TaskInitial()) {
     on<LoadTasksEvent>(_onLoadTasks);
     on<AddTaskEvent>(_onAddTask);
+    on<FilterTasksEvent>(_onFilterTasks);
+    on<SortTasksByDueDateEvent>(_onSortTasksByDueDate);
     on<UpdateTaskEvent>(_onUpdateTask);
     on<DeleteTaskEvent>(_onDeleteTask);
   }
@@ -99,5 +101,42 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
       emit(TaskDeleteError(message: "An error occurred while deleting the task: $error"));
     }
   }
+
+  Future<void> _onFilterTasks(FilterTasksEvent event, Emitter<TaskState> emit) async {
+    emit(TaskLoadingState());
+    try {
+      String userId = await sl<LocalStorageService>().getStringFromDisk('userId') ?? "defaultUserId";
+      final tasksStream = taskRepository.getTasks(
+        userId: userId,
+        priority: event.priority,
+        isCompleted: event.isCompleted,
+      );
+
+      await emit.forEach<Either<String, List<TaskModel>>>(
+        tasksStream,
+        onData: (either) => either.fold(
+              (failure) => TaskErrorState(failure),
+              (filteredTasks) => TaskLoadedState(filteredTasks),
+        ),
+        onError: (error, stackTrace) {
+          return TaskErrorState("An error occurred");
+        },
+      );
+    } catch (error) {
+      emit(TaskErrorState("Failed to filter tasks"));
+    }
+  }
+
+
+  Future<void> _onSortTasksByDueDate(SortTasksByDueDateEvent event, Emitter<TaskState> emit) async {
+    if (state is TaskLoadedState) {
+      final currentState = state as TaskLoadedState;
+
+      final sortedTasks = List<TaskModel>.from(currentState.tasks)
+        ..sort((a, b) => a.dueDate.compareTo(b.dueDate));
+      emit(TaskLoadedState(sortedTasks));
+    }
+  }
+
 }
 

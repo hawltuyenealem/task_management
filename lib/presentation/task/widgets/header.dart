@@ -6,7 +6,7 @@ import 'package:task_management/core/utils/dateFormatter.dart';
 
 Widget header(){
   return Container(
-    height: 160,
+    height: 180,
     padding: const EdgeInsets.all(15),
     decoration: BoxDecoration(
       color: ColorConstant.primaryColor
@@ -14,7 +14,7 @@ Widget header(){
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SizedBox(height: 20,),
+        const SizedBox(height: 30,),
         Row(
           children: [
             Container(

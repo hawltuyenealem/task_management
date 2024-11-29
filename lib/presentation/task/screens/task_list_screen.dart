@@ -24,7 +24,6 @@ class _TaskListScreenState extends State<TaskListScreen> {
     super.initState();
     BlocProvider.of<TaskBloc>(context).add(LoadTasksEvent());
     // sl<TaskBloc>().add(LoadTasksEvent());
-
   }
 
   @override
@@ -40,34 +39,39 @@ class _TaskListScreenState extends State<TaskListScreen> {
                 if (state is TaskLoadingState) {
                   return const Column(
                     children: [
-                      SizedBox(height: 150,),
+                      SizedBox(
+                        height: 150,
+                      ),
                       Center(child: CircularProgressIndicator()),
                     ],
                   );
                 } else if (state is TaskLoadedState) {
-        
                   final todayTasks =
                       state.tasks.where((task) => task.isToday()).toList();
                   final tomorrowTasks =
                       state.tasks.where((task) => task.isTomorrow()).toList();
                   final thisWeekTasks =
                       state.tasks.where((task) => task.isThisWeek()).toList();
-        
-                  if (todayTasks.isEmpty && tomorrowTasks.isEmpty && thisWeekTasks.isEmpty) {
+
+                  if (todayTasks.isEmpty &&
+                      tomorrowTasks.isEmpty &&
+                      thisWeekTasks.isEmpty) {
                     return Column(
                       children: [
-                        const SizedBox(height: 150,),
+                        const SizedBox(
+                          height: 150,
+                        ),
                         Center(
                           child: Text(
                             "No tasks available",
-                            style: GoogleFonts.inter(fontSize: 16, color: Colors.grey),
+                            style: GoogleFonts.inter(
+                                fontSize: 16, color: Colors.grey),
                           ),
                         ),
                       ],
                     );
                   }
-        
-        
+
                   return Padding(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 16.0, vertical: 8.0),
@@ -75,16 +79,26 @@ class _TaskListScreenState extends State<TaskListScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const SizedBox(height: 20),
-                          /// Today's Tasks
-                        taskSection(context: context,title: "Today",tasks:todayTasks),
+
+                        /// Today's Tasks
+                        taskSection(
+                            context: context,
+                            title: "Today",
+                            tasks: todayTasks),
                         const SizedBox(height: 30),
-        
-                          /// Tomorrow
-                        taskSection(context: context,title: "Tomorrow", tasks: tomorrowTasks),
+
+                        /// Tomorrow
+                        taskSection(
+                            context: context,
+                            title: "Tomorrow",
+                            tasks: tomorrowTasks),
                         const SizedBox(height: 30),
-        
-                           /// This Week's Tasks
-                        taskSection(context: context,title: "This Week",tasks: thisWeekTasks),
+
+                        /// This Week's Tasks
+                        taskSection(
+                            context: context,
+                            title: "This Week",
+                            tasks: thisWeekTasks),
                       ],
                     ),
                   );
@@ -93,7 +107,8 @@ class _TaskListScreenState extends State<TaskListScreen> {
                     child: Center(
                       child: Text(
                         "Failed to load tasks!",
-                        style: GoogleFonts.inter(color: Colors.red, fontSize: 16),
+                        style:
+                            GoogleFonts.inter(color: Colors.red, fontSize: 16),
                       ),
                     ),
                   );
@@ -112,16 +127,54 @@ class _TaskListScreenState extends State<TaskListScreen> {
           children: [
             // Left-side Icon
             IconButton(
-              icon: const Icon(Icons.menu, color: Colors.purple),
+              icon: const Icon(Icons.filter_list, color: Colors.purple),
               onPressed: () {
-                // Action for grid icon
+                showModalBottomSheet(
+                  context: context,
+                  builder: (context) {
+                    return Wrap(
+                      children: [
+                        ListTile(
+                          leading: const Icon(Icons.priority_high),
+                          title: const Text('High Priority'),
+                          onTap: () {
+                            sl<TaskBloc>()
+                                .add(FilterTasksEvent(priority: 'High'));
+                            Navigator.pop(context);
+                          },
+                        ),
+                        ListTile(
+                          leading: const Icon(Icons.priority_high_outlined),
+                          title: const Text('Medium Priority'),
+                          onTap: () {
+                            sl<TaskBloc>()
+                                .add(FilterTasksEvent(priority: 'Medium'));
+                            Navigator.pop(context);
+                          },
+                        ),
+                        ListTile(
+                          leading: const Icon(Icons.low_priority),
+                          title: const Text('Low Priority'),
+                          onTap: () {
+                            sl<TaskBloc>()
+                                .add(FilterTasksEvent(priority: 'Low'));
+                            Navigator.pop(context);
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                );
               },
             ),
-            const SizedBox(width: 40,),
+            const SizedBox(
+              width: 40,
+            ),
             GestureDetector(
               onTap: () {
                 Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => const AddTaskScreen()),
+                  MaterialPageRoute(
+                      builder: (context) => const AddTaskScreen()),
                 );
               },
               child: Container(
@@ -131,18 +184,18 @@ class _TaskListScreenState extends State<TaskListScreen> {
                   color: ColorConstant.primaryColor,
                   shape: BoxShape.circle,
                 ),
-                child: Stack(
+                child: const Stack(
                   alignment: Alignment.center,
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.add,
                       color: Colors.white,
                       size: 24,
                     ),
                     Positioned(
-                      bottom:13,
+                      bottom: 13,
                       right: 12,
-                      child: const Icon(
+                      child: Icon(
                         Icons.edit,
                         color: Colors.white,
                         size: 14,
@@ -157,15 +210,12 @@ class _TaskListScreenState extends State<TaskListScreen> {
             IconButton(
               icon: const Icon(Icons.calendar_today_outlined, color: Colors.grey),
               onPressed: () {
-                // Action for menu icon
+                context.read<TaskBloc>().add(SortTasksByDueDateEvent());
               },
             ),
           ],
         ),
       ),
-
     );
   }
-
-
 }

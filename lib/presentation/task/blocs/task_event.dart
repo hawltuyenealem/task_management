@@ -38,3 +38,13 @@ class DeleteTaskEvent extends TaskEvent {
   @override
   List<Object?> get props => [taskId];
 }
+
+
+class FilterTasksEvent extends TaskEvent {
+  final String? priority;
+  final bool? isCompleted;
+
+  FilterTasksEvent({this.priority,this.isCompleted});
+}
+
+class SortTasksByDueDateEvent extends TaskEvent {}
