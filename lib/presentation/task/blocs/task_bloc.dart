@@ -4,7 +4,6 @@ import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
-import 'package:task_management/core/constants.dart';
 import 'package:task_management/data/repositories/task_repository.dart';
 import 'package:task_management/data/services/local_storage_service.dart';
 
@@ -68,7 +67,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
   Future<void> _onUpdateTask(UpdateTaskEvent event, Emitter<TaskState> emit) async {
     emit(TaskLoadingState());
     try {
-      String userId = await sl<LocalStorageService>().getStringFromDisk('userId') ?? "defaultUserId";
+      String userId = await sl<LocalStorageService>().getStringFromDisk('userId') ?? "";
 
       final response = await taskRepository.updateTask(
         userId: userId,
@@ -88,7 +87,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
   Future<void> _onDeleteTask(DeleteTaskEvent event, Emitter<TaskState> emit) async {
     emit(TaskLoadingState());
     try {
-      String userId = await sl<LocalStorageService>().getStringFromDisk('userId') ?? "defaultUserId";
+      String userId = await sl<LocalStorageService>().getStringFromDisk('userId') ?? "";
 
       final response = await taskRepository.deleteTask(userId: userId, taskId: event.taskId);
 
@@ -104,7 +103,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
   Future<void> _onFilterTasks(FilterTasksEvent event, Emitter<TaskState> emit) async {
     emit(TaskLoadingState());
     try {
-      String userId = await sl<LocalStorageService>().getStringFromDisk('userId') ?? "defaultUserId";
+      String userId = await sl<LocalStorageService>().getStringFromDisk('userId') ?? "";
       final tasksStream = taskRepository.getTasks(
         userId: userId,
         priority: event.priority,

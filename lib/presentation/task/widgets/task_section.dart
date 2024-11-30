@@ -55,8 +55,7 @@ Widget taskSection(
                                 context: context,
                                 taskTitle: task.title,
                                 onConfirm: () {
-                                  sl<TaskBloc>()
-                                      .add(DeleteTaskEvent(taskId: task.id));
+                                  sl<TaskBloc>().add(DeleteTaskEvent(taskId: task.id));
                                 },
                               )),
                     ),
