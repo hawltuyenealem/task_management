@@ -25,16 +25,21 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   String _priority = 'Low';
 
   void _saveTask() {
-    final newTask = TaskModel(
-      id: generateRandomId(),
-      title: titleController.text,
-      description: descriptionController.text,
-      dueDate: _dueDate!,
-      priority: _priority,
-      isCompleted: false,
-    );
+    if(titleController.text.isNotEmpty || descriptionController.text.isNotEmpty || _dueDate !=null ){
+      final newTask = TaskModel(
+        id: generateRandomId(),
+        title: titleController.text,
+        description: descriptionController.text,
+        dueDate: _dueDate!,
+        priority: _priority,
+        isCompleted: false,
+      );
 
-    sl<TaskBloc>().add(AddTaskEvent(task: newTask));
+      sl<TaskBloc>().add(AddTaskEvent(task: newTask));
+    }
+    else {
+      showSnackBar("Enter Required Fields", context);
+    }
   }
 
   Future<void> _selectDueDate() async {

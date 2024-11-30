@@ -5,6 +5,7 @@ import 'package:task_management/core/button_style.dart';
 
 import '../../../core/utils/color_constant.dart';
 import '../../../data/models/task_model.dart';
+import '../../common/widgets/snackbar.dart';
 
 class EditTaskScreen extends StatefulWidget {
   final TaskModel task;
@@ -37,7 +38,7 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
   }
 
   void _saveTask() {
-
+    if(titleController.text.isNotEmpty || descriptionController.text.isNotEmpty || _dueDate !=null ){
       final updatedTask = TaskModel(
         id: widget.task.id,
         title: titleController.text,
@@ -46,9 +47,12 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
         priority: _priority,
         isCompleted: widget.task.isCompleted,
       );
-
       widget.onSave(updatedTask);
-      Navigator.pop(context); // Close the screen after saving
+      Navigator.pop(context);
+    }
+    else {
+      showSnackBar("Enter Required Fields", context);
+    }
   }
 
   Future<void> _selectDueDate() async {
